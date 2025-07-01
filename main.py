@@ -16,9 +16,11 @@ torch.manual_seed(42)
 np.random.seed(42)
 random.seed(42)
 
-root_directory_path = Path("~/project/intro-mlops-1/").expanduser()
+# Using Path objects makes it really easy to modify paths when we refactor
+# Normally we would put these in a gloabl file and import them but we will not do that for this project (but feel free too!)
+root_directory_path = Path("~/project/intro-mlops-1/").expanduser() 
 
-data_path =  root_directory_path / "data" / "data.csv"
+data_path =  root_directory_path / "data.csv"
 
 print("Loading dataset...")
 data = pd.read_csv(data_path)
@@ -112,6 +114,7 @@ for epoch in range(epochs):
     test_outputs = model(X_test_tensor)
     test_loss = criterion(test_outputs, y_test_tensor)
     _, predicted = torch.max(test_outputs, 1)
+    # Calculate Accuracy
     accuracy = (predicted == y_test_tensor).sum().item() / len(y_test_tensor)
 
     test_losses.append(test_loss.item())
@@ -145,8 +148,8 @@ plt.legend()
 plt.savefig(plot_directory / 'accuracy_plot.png')
 plt.close() 
 
-log_dir = root_directory_path / ""
 # Save some results to a file
+log_dir = root_directory_path / ""
 accuracy = accuracies[-1]
 with open(log_dir / 'results.txt', 'w') as f:
     f.write(f"Final Test Accuracy: {accuracy}\n")
