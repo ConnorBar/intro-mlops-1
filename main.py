@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
+from pathlib import Path
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.preprocessing import LabelEncoder
 
@@ -15,8 +16,9 @@ torch.manual_seed(42)
 np.random.seed(42)
 random.seed(42)
 
+root_directory_path = Path("~/project/intro-mlops-1/").expanduser()
 
-data_path = "data.csv"
+data_path =  root_directory_path / "data" / "data.csv"
 
 print("Loading dataset...")
 data = pd.read_csv(data_path)
@@ -78,7 +80,7 @@ class SimpleNN(nn.Module):
 
 # Initialize model, loss function, and optimizer
 input_size = X_train.shape[1]
-model = SimpleNN(input_size, len(torch.unique(y)))
+model = SimpleNN(input_size, len(np.unique(y)))
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
@@ -120,6 +122,8 @@ for epoch in range(epochs):
 
 print("Training completed!")
 
+plot_directory = root_directory_path / ""
+
 # Save Training/Test Loss Plot
 plt.figure(figsize=(10, 6))
 plt.plot(train_losses, label='Training Loss')
@@ -128,7 +132,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('Training and Test Loss Over Time')
 plt.legend()
-plt.savefig('training_loss_plot.png')
+plt.savefig(plot_directory / 'training_loss_plot.png')
 plt.close() 
 
 # Save Accuracy Plot
@@ -138,14 +142,16 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.title('Test Accuracy Over Time')
 plt.legend()
-plt.savefig('accuracy_plot.png')
+plt.savefig(plot_directory / 'accuracy_plot.png')
 plt.close() 
 
+log_dir = root_directory_path / ""
 # Save some results to a file
 accuracy = accuracies[-1]
-with open('results.txt', 'w') as f:
+with open(log_dir / 'results.txt', 'w') as f:
     f.write(f"Final Test Accuracy: {accuracy}\n")
     f.write(f"Training epochs: {epochs}\n")
     f.write(f"Model architecture: SimpleNN with {input_size} input features\n")
 
 print("All done!") 
+
