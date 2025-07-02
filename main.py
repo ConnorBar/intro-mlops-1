@@ -82,7 +82,9 @@ class SimpleNN(nn.Module):
 
 # Initialize model, loss function, and optimizer
 input_size = X_train.shape[1]
-model = SimpleNN(input_size, len(np.unique(y)))
+num_classes = len(np.unique(y))
+
+model = SimpleNN(input_size, num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
