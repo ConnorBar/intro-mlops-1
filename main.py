@@ -16,11 +16,15 @@ torch.manual_seed(42)
 np.random.seed(42)
 random.seed(42)
 
-# Using Path objects makes it really easy to modify paths when we refactor
-# Normally we would put these in a gloabl file and import them but we will not do that for this project (but feel free too!)
-root_directory_path = Path("~/project/intro-mlops-1/").expanduser() 
+"""
+Using Path objects makes it really easy to modify paths when we refactor - look up pathlib docs if you want to learn more!
+Normally we would put these in a gloabl file and import them but we will not do that for this project (but feel free too!)
+"""
+# Once you get root_directory_path set to point at the root of the working dir, you should NOT change it
+# only change the relative paths like data_path, model_path etc
+root_directory_path = Path("~/project/intro-mlops-1/").expanduser()
 
-data_path =  root_directory_path / "data.csv"
+data_path =  root_directory_path / "data.csv" # make sure to update the path when you create the new directories i.e / "data" / "data.csv"
 
 print("Loading dataset...")
 data = pd.read_csv(data_path)
@@ -80,23 +84,23 @@ class SimpleNN(nn.Module):
     x = self.layer3(x)
     return x
 
-# Initialize model, loss function, and optimizer
+# Initialize model, loss function, optimizer, and set epochs
 input_size = X_train.shape[1]
 num_classes = len(np.unique(y))
 
 model = SimpleNN(input_size, num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
-# Training loop!
-print("Starting training...")
 epochs = 50
-train_losses = [] # these are for metric tracking
+
+# Train Model loop! - Start
+print("Starting training...")
+train_losses = [] # these are for metric tracking, these will be returned from train_model()
 test_losses = []
 accuracies = []
 
 for epoch in range(epochs):
-  # Train one epoch
+  # Train one epoch - Start
   model.train()
   total_loss = 0
   for batch_X, batch_y in train_loader:
@@ -107,10 +111,11 @@ for epoch in range(epochs):
     optimizer.step()
     total_loss += loss.item()
   avg_train_loss = total_loss / len(train_loader)
+  # Train one epoch - End
 
   train_losses.append(avg_train_loss)
   
-  # Evaluate on test set
+  # Evaluate on test set - Start
   model.eval()
   with torch.no_grad():
     test_outputs = model(X_test_tensor)
@@ -118,12 +123,14 @@ for epoch in range(epochs):
     _, predicted = torch.max(test_outputs, 1)
     # Calculate Accuracy
     accuracy = (predicted == y_test_tensor).sum().item() / len(y_test_tensor)
+  # Evaluate on test set - End
 
-    test_losses.append(test_loss.item())
-    accuracies.append(accuracy)
+  test_losses.append(test_loss.item())
+  accuracies.append(accuracy)
   
   if (epoch + 1) % 10 == 0:
     print(f'Epoch [{epoch+1}/{epochs}], Train Loss: {avg_train_loss:.4f}, Test Loss: {test_loss.item():.4f}')
+  # Train Model loop! - End 
 
 print("Training completed!")
 
