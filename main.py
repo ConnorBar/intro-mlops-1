@@ -160,6 +160,7 @@ plt.close()
 # Save some results to a file
 log_dir = root_directory_path / ""
 accuracy = accuracies[-1]
+print("Final Test Accuracy: ", round(accuracy, 4))
 with open(log_dir / 'results.txt', 'w') as f:
     f.write(f"Final Test Accuracy: {accuracy}\n")
     f.write(f"Training epochs: {epochs}\n")
